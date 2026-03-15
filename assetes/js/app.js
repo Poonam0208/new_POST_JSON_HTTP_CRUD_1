@@ -8,8 +8,8 @@ const titleControl = document.getElementById('title');
 const bodyControl = document.getElementById('body');
 const userIdControl = document.getElementById('userId');
 
-const BASE_URL = `https://jsonplaceholder.typicode.com`;
-const POST_URL = `${BASE_URL}/posts`;
+const BASE_URL = `https://postcard-6a86d-default-rtdb.firebaseio.com`;
+const POST_URL = `${BASE_URL}/posts.json`;
 
 
 
