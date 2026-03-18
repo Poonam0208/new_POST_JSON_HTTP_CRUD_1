@@ -13,21 +13,21 @@ const POST_URL = `${BASE_URL}/posts.json`;
 
 
 
-function SnackBar(msg, icon){
+function SnackBar(msg, icon) {
     Swal.fire({
-        title : msg,
+        title: msg,
         icon: icon,
         timer: 3000
     })
 }
 
-let postArr ;
+let postArr;
 
 
-function CreatePostCard(arr){
+function CreatePostCard(arr) {
     let result = ``;
 
-    for(let i = arr.length -1; i >=0 ; i--){
+    for (let i = arr.length - 1; i >= 0; i--) {
         result += `
          <div class="col-md-4 mb-4" id="${arr[i].id}">
             <div class="card h-100">
@@ -50,7 +50,7 @@ function CreatePostCard(arr){
 
 }
 
-function fetchBlog(){
+function fetchBlog() {
     spinner.classList.remove('d-none')
 
     let xhr = new XMLHttpRequest();
@@ -59,13 +59,13 @@ function fetchBlog(){
 
     xhr.send();
 
-    xhr.onload = function(){
-        if(xhr.status >= 200 && xhr.status < 299){
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 299) {
             let postArr = JSON.parse(xhr.response)
-             CreatePostCard(postArr)
-             spinner.classList.add('d-none')
-            
-        }else{
+            CreatePostCard(postArr)
+            spinner.classList.add('d-none')
+
+        } else {
             SnackBar(`Somthing went wrong !!!`, `error`)
             spinner.classList.add('d-none')
         }
@@ -74,16 +74,16 @@ function fetchBlog(){
 
 fetchBlog()
 
-function onSubmitPost(eve){
+function onSubmitPost(eve) {
     eve.preventDefault();
 
     let POST_OBJ = {
-        title : titleControl.value,
-        body : bodyControl.value,
-        userId : userIdControl.value
+        title: titleControl.value,
+        body: bodyControl.value,
+        userId: userIdControl.value
     }
     cl(POST_OBJ)
-    
+
 
     spinner.classList.remove('d-none')
 
@@ -92,8 +92,8 @@ function onSubmitPost(eve){
     xhr.open("POST", POST_URL, true)
     xhr.send(JSON.stringify(POST_OBJ));
 
-    xhr.onload = function(){
-        if(xhr.status >= 200 && xhr.status < 299){
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 299) {
             // cl(xhr.response)
 
             PostForm.reset();
@@ -119,12 +119,42 @@ function onSubmitPost(eve){
             `
 
             PostContainer.prepend(col)
-             spinner.classList.add('d-none')
-        }else{
+            spinner.classList.add('d-none')
+        } else {
             SnackBar(`Somthing went wrong !!!`, `error`)
             spinner.classList.add('d-none')
         }
     }
+}
+
+
+function onEdit(ele) {
+    let EDIT_ID = ele.closest('.col-md-4').id
+    localStorage.setItem('EDIT_ID', EDIT_ID)
+    let EDIT_URL = `${BASE_URL}/posts/${EDIT_ID}`
+    spinner.classList.remove('d-none')
+    let xhr = new XMLHttpRequest();
+
+    xhr.open('GET', EDIT_URL, true)
+
+    xhr.send(null)
+
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            let postObj = JSON.parse(xhr.response)
+            titleControl.value = postObj.title;
+            bodyControl.value = postObj.body;
+            userIdControl.value = postObj.userId;
+            updatePostBtn.classList.remove('d-none')
+            addPostBtn.classList.add('d-none')
+            spinner.classList.add('d-none')
+            snackbar(`The post with id ${EDIT_ID} is patched successfully !!!`, 'success')
+
+        } else {
+            spinner.classList.add('d-none')
+        }
+    }
+
 }
 
 
